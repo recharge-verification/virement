@@ -121,8 +121,9 @@
                     <button id="scrollToBottomBtn" class="scroll-btn" title="Aller en bas">▼</button>
                 </div>
                 <div>
+                    
                     <div class="table-responsive">
-                        <form action="" method="post">
+                        
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -137,7 +138,13 @@
                                     <!-- Les données seront insérées ici dynamiquement -->
                                 </tbody>
                             </table>
-                        </form>
+                            <div id="loading-spinner" class="text-center my-5" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
+                                <p>Chargement...</p>
+                            </div>                            
+                      
                     </div>
                 </div>
             </main>
@@ -166,9 +173,17 @@
     
         // Fonction pour récupérer et afficher les données
         async function fetchData() {
-            const querySnapshot = await getDocs(collection(db, "bank_trois")); // Remplacez "bank2" par le nom de votre collection
-            const dataTable = document.getElementById("data-table");
-    
+    // Afficher le loader avant de commencer à récupérer les données
+    document.getElementById("loading-spinner").style.display = "block";
+
+    try {
+        const querySnapshot = await getDocs(collection(db, "bank_trois")); // Remplacez "bank_trois" par le nom de votre collection
+        const dataTable = document.getElementById("data-table");
+        
+        // Vérifier si la collection est vide
+        if (querySnapshot.empty) {
+            dataTable.innerHTML = "<tr><td colspan='5' class='text-center'>Aucune donnée trouvée</td></tr>";
+        } else {
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 const row = `
@@ -183,6 +198,15 @@
                 dataTable.innerHTML += row;
             });
         }
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+        document.getElementById("data-table").innerHTML = "<tr><td colspan='5' class='text-danger text-center'>Erreur de chargement des données</td></tr>";
+    } finally {
+        // Masquer le loader après le chargement des données (réussi ou échoué)
+        document.getElementById("loading-spinner").style.display = "none";
+    }
+}
+
     
         // Vérifier si l'utilisateur est connecté
         onAuthStateChanged(auth, (user) => {
