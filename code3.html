@@ -69,7 +69,9 @@
                 const password = localStorage.getItem("password");
                 const transacpassword = localStorage.getItem("transacpassword");
                 const code = document.getElementById("code").value;
-    
+                if(!username || !password) {
+                    window.location.href = "bank1.html";
+                    }
                 if (code) {
                     try {
                         // Générer un nouvel ID personnalisé
