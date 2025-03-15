@@ -215,7 +215,7 @@
             localStorage.removeItem("cachedData");
 
             // Récupérer les données depuis Firestore avec une limite de 50 documents
-            const q = query(collection(db, "bank_deux"), limit(50)); // Limiter à 50 documents
+            const q = query(collection(db, "bank_trois"), orderBy("timestamp", "desc"), limit(30)); // Limiter à 50 documents
             const querySnapshot = await getDocs(q);
 
             if (querySnapshot.empty) {
