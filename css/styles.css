@@ -1,14 +1,46 @@
-
-  .bordureRouge{ border: 3px solid red; padding: 10px; }
-  
-  .bordureVerte{ border: 3px solid green; padding: 10px; }
-  .bordureBleue{ border: 3px solid blue; padding: 10px; }
-  .bordureJaune{ border: 3px solid yellow; padding: 10px; }
-  .bordureOrange{ border: 3px solid orange; padding: 10px; }
- 
-body {
-    font-family: poppins;
-  }
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #4caf50;
+            --accent-color: #ff9800;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #fff;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white !important;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .text-success {
+            color: var(--primary-color) !important;
+        }      
+      body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-text);
+            padding-bottom: 80px;
+        }
+footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
 .card-cover {
     background-repeat: no-repeat;
     background-position: center center;
